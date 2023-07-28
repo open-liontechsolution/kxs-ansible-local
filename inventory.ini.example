@@ -1,0 +1,10 @@
+[masters]
+master1 ansible_host=x.x.x.x
+master2 ansible_host=x.x.x.x
+
+[workers]
+worker1 ansible_host=x.x.x.x
+worker2 ansible_host=x.x.x.x
+
+[mariadb]
+mariadb ansible_host=x.x.x.x
