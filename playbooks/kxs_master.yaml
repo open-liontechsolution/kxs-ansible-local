@@ -1,0 +1,14 @@
+- name: k3s master install
+  hosts: masters
+  become: true
+  tasks:
+    - name: Instala programas necesarios
+      apt:
+        name: "{{item}}"
+        state: present
+      loop:
+        - wireguard
+        - netclient
+    - name: instala k3s master
+      ansible.builtin.shell:
+        cmd: curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
