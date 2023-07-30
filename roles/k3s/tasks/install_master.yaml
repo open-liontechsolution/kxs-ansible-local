@@ -1,0 +1,22 @@
+---
+- name: Instala programas necesarios
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - wireguard
+    - netclient
+    
+- name: Añade a la VPN
+  ansible.builtin.shell:
+    cmd: netclient join -t {{ netclient_token }}
+
+- name: Download k3s install script
+  get_url:
+    url: "{{ k3s_install_script }}"
+    dest: "/tmp/install-k3s.sh"
+    mode: '0755'
+
+- name: Install k3s master
+  command: "/tmp/install-k3s.sh --write-kubeconfig-mode 644 --node-name {{ master_first_name }} --cluster-cidr {{ cluster_cidr }} --datastore-endpoint {{ cluster_db }} --service-cidr {{ service_cidr }} --cluster-dns {{ cluster_dns }}"
+  become: true

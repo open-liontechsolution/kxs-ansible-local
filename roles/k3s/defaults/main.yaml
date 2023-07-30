@@ -1,0 +1,5 @@
+# URL desde donde descargar el script de instalación de k3s
+k3s_install_script: "https://get.k3s.io"
+
+# Token para unir nodos adicionales al clúster
+k3s_cluster_secret: "secret"

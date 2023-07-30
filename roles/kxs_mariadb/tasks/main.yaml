@@ -1,0 +1,22 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install MariaDB server
+  apt:
+    name: mariadb-server
+    state: present
+  notify: restart mariadb
+
+- name: Ensure MariaDB service is running
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Set MariaDB root password
+  mysql_user:
+    name: root
+    password: "{{ mariadb_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
