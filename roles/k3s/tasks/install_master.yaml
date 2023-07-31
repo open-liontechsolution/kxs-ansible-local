@@ -20,3 +20,10 @@
 - name: Install k3s master
   command: "/tmp/install-k3s.sh --write-kubeconfig-mode 644 --node-name {{ master_first_name }} --cluster-cidr {{ cluster_cidr }} --datastore-endpoint {{ cluster_db }} --service-cidr {{ service_cidr }} --cluster-dns {{ cluster_dns }}"
   become: true
+
+- name: Fetch kubeconfig from master
+  fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: ~/.k3s/config
+    flat: yes
+  delegate_to: "{{ groups['master'][0] }}"

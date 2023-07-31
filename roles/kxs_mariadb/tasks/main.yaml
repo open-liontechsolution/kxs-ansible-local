@@ -3,6 +3,11 @@
     update_cache: yes
     cache_valid_time: 3600
 
+- name: Install necessary python modules
+  apt:
+    name: python3-pymysql
+    state: present
+
 - name: Install MariaDB server
   apt:
     name: mariadb-server
@@ -20,3 +25,17 @@
     name: root
     password: "{{ mariadb_root_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Ensure databases exist
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: {{ k3s_database }}
+    state: present
+
+- name: Ensure users exist
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: {{ k3s_database_user }}
+    password: {{ k3s_database_pass }}
+    priv: '{{ k3s_database }}.*:ALL'
+    state: present
