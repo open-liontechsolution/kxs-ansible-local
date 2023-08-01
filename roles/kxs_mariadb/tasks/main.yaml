@@ -2,40 +2,79 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
+  become: true
+
+- name: Instalar GPG
+  apt:
+    name: gnupg
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Agregar clave GPG para netclient
+  apt_key:
+    url: https://apt.netmaker.org/gpg.key
+  become: true
+
+- name: Agregar repositorio para netclient
+  apt_repository:
+    repo: deb [arch=arm64] https://apt.netmaker.org stable main
+    state: present
+  become: true
+
+- name: Instala programas necesarios
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - wireguard
+    - netclient
+  become: true
+    
+- name: Añade a la VPN
+  ansible.builtin.shell:
+    cmd: netclient join -t {{ netclient_token }}
 
 - name: Install necessary python modules
   apt:
     name: python3-pymysql
     state: present
+  become: true
 
 - name: Install MariaDB server
   apt:
     name: mariadb-server
     state: present
   notify: restart mariadb
+  become: true
 
 - name: Ensure MariaDB service is running
   service:
     name: mariadb
     state: started
     enabled: yes
+  become: true
 
 - name: Set MariaDB root password
   mysql_user:
     name: root
     password: "{{ mariadb_root_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
 
 - name: Ensure databases exist
   mysql_db:
     login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: {{ k3s_database }}
+    name: "{{ k3s_database }}"
     state: present
+  become: true
 
 - name: Ensure users exist
   mysql_user:
     login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: {{ k3s_database_user }}
-    password: {{ k3s_database_pass }}
-    priv: '{{ k3s_database }}.*:ALL'
+    name: "{{ k3s_database_user }}"
+    password: "{{ k3s_database_pass }}"
+    priv: "{{ k3s_database }}.*:ALL"
     state: present
+  become: true
