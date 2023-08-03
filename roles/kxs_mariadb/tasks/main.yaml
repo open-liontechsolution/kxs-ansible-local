@@ -1,6 +1,7 @@
-- name: Update apt cache
+- name: Update apt cache and upgrade
   apt:
-    update_cache: yes
+    update_cache: true
+    upgrade: true
     cache_valid_time: 3600
   become: true
 
@@ -8,7 +9,7 @@
   apt:
     name: gnupg
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
 
 - name: Agregar clave GPG para netclient
@@ -26,15 +27,16 @@
   apt:
     name: "{{item}}"
     state: present
-    update_cache: yes
+    update_cache: true
   loop:
     - wireguard
-    - netclient
+    - netclient=0.17.1-0
   become: true
     
 - name: Añade a la VPN
   ansible.builtin.shell:
     cmd: netclient join -t {{ netclient_token }}
+  become: true
 
 - name: Install necessary python modules
   apt:
@@ -56,23 +58,25 @@
     enabled: yes
   become: true
 
-- name: Set MariaDB root password
-  mysql_user:
-    name: root
-    password: "{{ mariadb_root_password }}"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-  become: true
+# - name: Set MariaDB root password
+#   mysql_user:
+#     name: root
+#     password: "{{ mariadb_root_password }}"
+#     login_unix_socket: /var/run/mysqld/mysqld.sock
+#   become: true
 
 - name: Ensure databases exist
   mysql_db:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
     name: "{{ k3s_database }}"
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
     state: present
   become: true
 
 - name: Ensure users exist
   mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
     name: "{{ k3s_database_user }}"
     password: "{{ k3s_database_pass }}"
     priv: "{{ k3s_database }}.*:ALL"

@@ -1,9 +1,9 @@
 ---
-- hosts: master
+- hosts: master_first
   roles:
     - { role: k3s, tasks_from: install_master }
 
-- hosts: additional_masters
+- hosts: masters
   roles:
     - { role: k3s, tasks_from: install_additional_masters }
 
