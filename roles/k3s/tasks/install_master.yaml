@@ -1,43 +1,3 @@
-- name: Update apt cache and upgrade
-  apt:
-    update_cache: true
-    upgrade: true
-    cache_valid_time: 3600
-  become: true
-
-- name: Instalar GPG
-  apt:
-    name: gnupg
-    state: present
-    update_cache: true
-  become: true
-
-- name: Agregar clave GPG para netclient
-  apt_key:
-    url: https://apt.netmaker.org/gpg.key
-  become: true
-
-- name: Agregar repositorio para netclient
-  apt_repository:
-    repo: deb [arch=arm64] https://apt.netmaker.org stable main
-    state: present
-  become: true
-
-- name: Instala programas necesarios
-  apt:
-    name: "{{item}}"
-    state: present
-    update_cache: true
-  loop:
-    - wireguard
-    - netclient=0.17.1-0
-  become: true
-    
-- name: Añade a la VPN
-  ansible.builtin.shell:
-    cmd: netclient join -t {{ netclient_token }}
-  become: true
-
 - name: Download k3s install script
   get_url:
     url: "{{ k3s_install_script }}"
@@ -53,4 +13,3 @@
     src: /etc/rancher/k3s/k3s.yaml
     dest: ~/.k3s/config
     flat: yes
-  delegate_to: "{{ groups['master'][0] }}"

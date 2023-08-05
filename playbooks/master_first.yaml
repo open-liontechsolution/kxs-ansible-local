@@ -1,0 +1,10 @@
+- hosts: master_first
+  pre_tasks:
+    - name: update and install netclient
+      include_role:
+        name: common
+  tasks:
+    - name: instalamos nodo master master_first
+      include_role:
+        name: k3s
+        tasks_from: install_master

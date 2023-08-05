@@ -1,3 +1,9 @@
 - hosts: mariadb
-  roles:
-    - kxs_mariadb
+  pre_tasks:
+    - name: Preparing instance with vpn
+      include_role:
+        name: common
+  tasks:
+    - name: installing MariaDB
+      include_role:
+        name: kxs_mariadb
