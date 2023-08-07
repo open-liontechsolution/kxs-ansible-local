@@ -5,5 +5,5 @@
     mode: '0755'
 
 - name: Install k3s worker
-  command: "/tmp/install-k3s.sh agent --server https://{{ first_master_ip }}:6443 --token {{ k3s_cluster_secret }} --with-node-id"
+  command: "/tmp/install-k3s.sh agent --server https://{{ first_master_dns }}:6443 --token {{ k3s_cluster_secret }} --with-node-id"
   become: true

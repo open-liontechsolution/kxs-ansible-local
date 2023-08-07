@@ -29,15 +29,17 @@
 - name: Ensure databases exist
   mysql_db:
     name: "{{ k3s_database }}"
-    login_user: root
-    login_password: "{{ mariadb_root_password }}"
+    # login_user: root
+    # login_password: "{{ mariadb_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     state: present
   become: true
 
 - name: Ensure users exist
   mysql_user:
-    login_user: root
-    login_password: "{{ mariadb_root_password }}"
+    # login_user: root
+    # login_password: "{{ mariadb_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     name: "{{ k3s_database_user }}"
     password: "{{ k3s_database_pass }}"
     host: "{{ k3s_client_host }}"

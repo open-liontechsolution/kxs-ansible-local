@@ -1,0 +1,10 @@
+- hosts: workers
+  pre_tasks:
+    - name: update and install netclient
+      include_role:
+        name: common
+  tasks:
+    - name: instalamos nodos worker
+      include_role:
+        name: k3s
+        tasks_from: install_workers
