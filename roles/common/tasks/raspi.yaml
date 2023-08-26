@@ -1,0 +1,6 @@
+- name: Instala programas necesarios para k3s
+  apt:
+    name: "linux-modules-extra-raspi"
+    state: present
+    update_cache: true
+  become: true

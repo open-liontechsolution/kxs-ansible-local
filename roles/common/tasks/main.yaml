@@ -32,6 +32,8 @@
   loop:
     - wireguard
     - netclient=0.17.1-0
+    - open-iscsi
+    - nfs-common
   become: true
     
 - name: Añade a la VPN
