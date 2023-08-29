@@ -1,0 +1,83 @@
+- name: Creating monitoring namespace
+  command: "kubectl create namespace monitoring"
+
+- name: Copy promtheus monitoring manifests
+  syncronize:
+    src: "{{ manifests_directory }}/monitoring/"
+    dest: /tmp/monitoring/
+
+# - name: Copy prometheus-operator manifest
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/prometheus-operator.yaml"
+#     dest: /tmp/monitoring/prometheus-operator.yaml
+
+- name: Deploy prometheus-operator
+  command: "kubectl apply -f /tmp/monitoring/prometheus-operator.yaml"
+
+# - name: Copy longhorn service monitor manifests
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/longhorn/longhorn-servicemonitor.yaml"
+#     dest: /tmp/monitoring/longhorn/longhorn-servicemonitor.yaml
+
+- name: Deploy longhorn service monitor
+  command: "kubectl apply -f /tmp/monitoring/longhorn/longhorn-servicemonitor.yaml"
+
+# - name: Copy node exporter manifest
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/node-exporter/{{ item }}"
+#     dest: "/tmp/monitoring/node-exporter/{{ item }}"
+#   loop:
+#     - cluster-role-binding.yaml
+#     - cluster-role.yaml
+#     - daemonset.yaml
+#     - service-account.yaml
+#     - service-monitor.yaml
+#     - service.yaml
+
+- name: Deploy node exporter service monitor
+  command: "kubectl apply -f /tmp/monitoring/node-exporter/{{ item }}"
+  loop:
+    - cluster-role-binding.yaml
+    - cluster-role.yaml
+    - daemonset.yaml
+    - service-account.yaml
+    - service-monitor.yaml
+    - service.yaml
+
+# - name: Copy kube-state-metrics manifest
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/kube-state-metrics/{{ item }}"
+#     dest: "/tmp/monitoring/kube-state-metrics/{{ item }}"
+#   loop:
+#     - cluster-role-binding.yaml
+#     - cluster-role.yaml
+#     - daemonset.yaml
+#     - service-account.yaml
+#     - service-monitor.yaml
+#     - service.yaml
+
+- name: Deploy kube-state-metrics service monitor
+  command: "kubectl apply -f /tmp/monitoring/kube-state-metrics/{{ item }}"
+  loop:
+    - cluster-role-binding.yaml
+    - cluster-role.yaml
+    - daemonset.yaml
+    - service-account.yaml
+    - service-monitor.yaml
+    - service.yaml
+
+# - name: Copy kubelet manifest
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/kubelet/kubelet-servicemonitor.yaml"
+#     desT: "/tmp/monitoring/kubelet/kubelet-servicemonitor.yaml"
+
+- name: Deploy kubelet service monitor
+  command: "kubectl apply -f /tmp/monitoring/kubelet/kubelet-servicemonitor.yaml"
+
+# - name: Copy traefik manifest
+#   copy:
+#     src: "{{ manifests_directory }}/monitoring/traefik/traefik-servicemonitor.yaml"
+#     desT: "/tmp/monitoring/traefik/traefik-servicemonitor.yaml"
+
+- name: Deploy kubelet service monitor
+  command: "kubectl apply -f /tmp/monitoring/traefik/traefik-servicemonitor.yaml"

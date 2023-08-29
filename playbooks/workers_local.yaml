@@ -1,0 +1,15 @@
+- hosts: workers_local
+  pre_tasks:
+    # - name: raspi essentials for k3s
+    #   include_role:
+    #     name: common
+    #     tasks_from: raspi
+    - name: update and install netclient
+      include_role:
+        name: common
+        tasks_from: main
+  tasks:
+    - name: instalamos nodos worker
+      include_role:
+        name: k3s
+        tasks_from: install_workers_local

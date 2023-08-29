@@ -13,6 +13,7 @@ master2_host=$(yq eval '.master2_host' group_vars/masters.yaml)
 master2_pass=$(yq eval '.master2_pass' group_vars/masters.yaml)
 worker2_host=$(yq eval '.worker2_host' group_vars/workers.yaml)
 worker2_pass=$(yq eval '.worker2_pass' group_vars/workers.yaml)
+workingdir=$(yq eval '.workingdir' group_vars/masters.yaml)
 
 # Crear las entradas de inventario
 echo "[master_first]" > inventory.ini
@@ -43,6 +44,6 @@ sed -i "/^first_master_dns/c\first_master_dns: $master_first_private_dns" group_
 # worker public ip master
 sed -i "/^first_master_public_ip/c\first_master_public_ip: $master_first_host" group_vars/workers_local.yaml
 
-export KUBECONFIG=/home/juanjocop/.k3s/config
+export KUBECONFIG="/home/$workingdir/.k3s/config"
 
-sed -i "s/127.0.0.1/$master_first_host/g" ~/.k3s/config
+sed -i "/server:/c\    server: https://$master_first_host:6443" /home/$workingdir/.k3s/config

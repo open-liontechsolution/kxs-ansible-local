@@ -1,3 +1,32 @@
+- name: Formateamos volumen ebs para prometheus
+  become: true
+  filesystem:
+    fstype: ext4
+    dev: /dev/sdf
+
+- name: Crear directorio de montaje
+  file:
+    path: /mnt/prometheus
+    state: directory
+
+- name: Montamos el volumen
+  mount:
+    path: /mnt/prometheus
+    src: /dev/sdf
+    fstype: ext4
+    state: mounted
+
+- name: Instala controladores necesarios para longhorn
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: true
+    allow_downgrade: true
+  loop:
+    - open-iscsi
+    - nfs-common
+  become: true
+
 - name: Download k3s install script
   get_url:
     url: "{{ k3s_install_script }}"

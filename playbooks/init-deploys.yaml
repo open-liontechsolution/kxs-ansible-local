@@ -1,0 +1,10 @@
+- hosts: master_first
+  tasks:
+    - name: Iniciamos despliegue longhorn
+      include_role:
+        name: k3s
+        tasks_from: longhorn_deployment
+    - name: Iniciamos despliegue prometheus
+      include_role:
+        name: k3s
+        tasks_from: prometheus_deployment

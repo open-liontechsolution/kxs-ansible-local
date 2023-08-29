@@ -23,7 +23,7 @@
     state: present
   become: true
 
-- name: Instala programas necesarios
+- name: Instala programas necesarios para vpn
   apt:
     name: "{{item}}"
     state: present
@@ -32,8 +32,6 @@
   loop:
     - wireguard
     - netclient=0.17.1-0
-    - open-iscsi
-    - nfs-common
   become: true
     
 - name: Añade a la VPN
