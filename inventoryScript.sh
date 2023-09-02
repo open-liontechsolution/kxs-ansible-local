@@ -44,6 +44,6 @@ sed -i "/^first_master_dns/c\first_master_dns: $master_first_private_dns" group_
 # worker public ip master
 sed -i "/^first_master_public_ip/c\first_master_public_ip: $master_first_host" group_vars/workers_local.yaml
 
-export KUBECONFIG="/home/$workingdir/.k3s/config"
-
 sed -i "/server:/c\    server: https://$master_first_host:6443" /home/$workingdir/.k3s/config
+
+cp -f "/home/$workingdir/.k3s/config" "/home/$workingdir/.kube/config"

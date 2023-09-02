@@ -1,2 +1,5 @@
 - name: Longhorn namespace
   command: "kubectl create namespace longhorn-system"
+
+- name: Añadimos repo de longhorn
+  command: ""
