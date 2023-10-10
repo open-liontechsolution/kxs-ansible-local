@@ -1,2 +1,2 @@
-# kxs-ansible
-hybrid cloud and local project of kxs
+# kxs-ansible-local
+Local project of clustering with k3s
