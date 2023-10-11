@@ -3,6 +3,7 @@
     - name: update and install netclient
       include_role:
         name: common
+        tasks_from: raspi
   tasks:
     - name: instalamos nodo master master_first
       include_role:

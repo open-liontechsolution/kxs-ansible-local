@@ -1,25 +1,15 @@
-# - name: Download k3s install script
-#   get_url:
-#     url: "{{ k3s_install_script }}"
-#     dest: "/tmp/install-k3s.sh"
-#     mode: '0755'
-
-# - name: Install k3s master
-#   command: "INSTALL_K3S_VERSION='v1.26.5+k3s2' /tmp/install-k3s.sh --write-kubeconfig-mode 644 --node-name {{ master_first_name }} --cluster-cidr {{ cluster_cidr }} --datastore-endpoint {{ cluster_db }} --service-cidr {{ service_cidr }} --cluster-dns {{ cluster_dns }} --tls-san {{ master_first_ip_public }} --token {{ k3s_cluster_secret }} --disable-agent"
-#   become: true
-
 - name: install k3s master
   shell: |
     curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="{{ install_k3s_version }}" sh -s - \
     --write-kubeconfig-mode 644 \
     --node-name {{ master_first_name }} \
     --cluster-cidr {{ cluster_cidr }} \
-    --datastore-endpoint '{{ cluster_db }}' \
+    --cluster-init
     --service-cidr {{ service_cidr }} \
     --cluster-dns {{ cluster_dns }} \
     --tls-san {{ master_first_ip_public }} \
     --token {{ k3s_cluster_secret }} \
-    --disable-agent
+    --prefer-bundled-bin
   args:
     executable: /bin/bash
 

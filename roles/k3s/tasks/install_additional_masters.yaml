@@ -5,5 +5,5 @@
     mode: '0755'
 
 - name: Install k3s master
-  command: "/tmp/install-k3s.sh server --server https://{{ first_master_ip }}:6443 --token {{ k3s_cluster_secret }} --write-kubeconfig-mode 644 --with-node-id"
+  command: "/tmp/install-k3s.sh server --server https://{{ first_master_ip }}:6443 --token {{ k3s_cluster_secret }} --write-kubeconfig-mode 644 --with-node-id --tls-san {{ additional_master_ip }}"
   become: true
