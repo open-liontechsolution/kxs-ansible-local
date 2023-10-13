@@ -4,7 +4,7 @@
     --write-kubeconfig-mode 644 \
     --node-name {{ master_first_name }} \
     --cluster-cidr {{ cluster_cidr }} \
-    --cluster-init
+    --cluster-init \
     --service-cidr {{ service_cidr }} \
     --cluster-dns {{ cluster_dns }} \
     --tls-san {{ master_first_ip_public }} \

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: node-red
+  name: node-red
+  namespace: domotica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-red
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: node-red
+    spec:
+      initContainers:
+      - name: volume-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /data"]
+        volumeMounts:
+        - mountPath: /data
+          name: node-red-claim
+      containers:
+        - image: nodered/node-red
+          imagePullPolicy: Always
+          name: node-red
+          ports:
+            - containerPort: 1880
+              protocol: TCP
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "300m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          env:
+            - name: TZ
+              value: Europe/Madrid
+            - name: PGID
+              value: "1000"
+            - name: PUID
+              value: "1000"
+          volumeMounts:
+            - mountPath: /data
+              name: node-red-claim
+      volumes:
+        - name: node-red-claim
+          persistentVolumeClaim:
+            claimName: nodered
