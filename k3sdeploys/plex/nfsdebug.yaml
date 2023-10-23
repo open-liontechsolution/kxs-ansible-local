@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-debug
+  namespace: plex
+spec:
+  containers:
+  - name: nfs-debug-container
+    image: alpine
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 3600"]

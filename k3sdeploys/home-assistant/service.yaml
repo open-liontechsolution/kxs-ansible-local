@@ -7,7 +7,7 @@ metadata:
   namespace: domotica
 spec:
   ports:
-    - name: "8123"
+    - name: "http"
       port: 8123
       protocol: TCP
       targetPort: 8123
@@ -15,3 +15,23 @@ spec:
     app: home-assistant
   sessionAffinity: None
   type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant-nodeport
+  namespace: domotica
+spec:
+  type: NodePort
+  ports:
+    - port: 8123
+      targetPort: 8123
+      nodePort: 31000
+      protocol: TCP
+      name: http
+  selector:
+    app: home-assistant

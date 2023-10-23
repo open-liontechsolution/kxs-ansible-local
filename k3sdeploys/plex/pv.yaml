@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-nfs-pv
+  labels:
+    type: nfs
+  namespace: plex
+spec:
+  capacity:
+    storage: 1000Gi  # Ajusta esto según tus necesidades
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    path: /export/plex
+    server: 192.168.50.139
+  mountOptions:
+    - hard
+    - nolock

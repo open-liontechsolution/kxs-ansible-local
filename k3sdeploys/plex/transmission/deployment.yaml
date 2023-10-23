@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: plex
+  labels:
+    app: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+      - name: transmission
+        image: linuxserver/transmission:latest
+        ports:
+          - containerPort: 9091
+            protocol: TCP
+          - containerPort: 51413
+            protocol: TCP
+          - containerPort: 51413
+            protocol: UDP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Europe/Madrid
+
+      - name: wireguard-sidecar
+        image: linuxserver/wireguard:latest
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - NET_ADMIN
+        # env:
+        # - name: PEER1_PUBLIC_KEY
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: client-public-key
+        #       key: WIREGUARD_PUBLIC_KEY
+        # - name: PEER1_ENDPOINT
+        #   value: "52.209.35.53:51821"
+        # - name: PEER1_ALLOWEDIPS
+        #   value: "10.107.161.0/24"
+        volumeMounts:
+        - name: wg-config
+          mountPath: /config/wg_confs
+      resources:
+        
+      volumes:
+      - name: wg-config
+        secret:
+          secretName: wireguard-conf

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: plex
+  labels:
+    app: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  strategy:
+    rollingUpdate:
+      maxSurge: 1                 # < The number of pods that can be created above the desired amount of pods during an update
+      maxUnavailable: 0           # < The number of pods that can be unavailable during the update process
+    type: RollingUpdate 
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      hostNetwork: true
+      containers:
+        - name: plex
+          image: linuxserver/plex:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Europe/Madrid
+            - name: VERSION
+              value: latest
+          ports:
+            - containerPort: 32400
+              hostPort: 32400
+              protocol: TCP
+            - containerPort: 32400
+              hostPort: 32400
+              protocol: UDP
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: "/config"
+              name: plex-config
+              subPath: "config"
+            - mountPath: "/media/tv"
+              name: plex-storage
+              subPath: "series"
+            - mountPath: "/media/movies"
+              name: plex-storage
+              subPath: "peliculas"
+            - mountPath: "/media/fotos"
+              name: plex-storage
+              subPath: "fotos"
+            - mountPath: "/media/videos"
+              name: plex-storage
+              subPath: "videos"
+      volumes:
+        - name: plex-storage
+          persistentVolumeClaim:
+            claimName: plex-nfs-pvc
+        - name: plex-config
+          persistentVolumeClaim:
+            claimName: plex-config-2

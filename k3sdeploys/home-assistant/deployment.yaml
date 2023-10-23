@@ -25,8 +25,8 @@ spec:
             memory: "512Mi"
             cpu: "500m"
           limits:
-            memory: "1Gi"
-            cpu: "1000m"
+            memory: "2Gi"
+            cpu: "2000m"
         volumeMounts:
         - name: config
           mountPath: /config
@@ -36,7 +36,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: homeassistant
+          claimName: homeassistant2
       - name: localtime
         hostPath:
           path: /etc/localtime
