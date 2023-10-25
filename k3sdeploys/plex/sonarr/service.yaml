@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr-service
+  namespace: plex  
+  labels:
+    app: sonarr
+spec:
+  selector:
+    app: sonarr
+  ports:
+    - name: webui
+      port: 8989
+      targetPort: 8989
+      protocol: TCP

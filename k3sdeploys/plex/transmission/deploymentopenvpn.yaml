@@ -17,14 +17,9 @@ spec:
     spec:
       containers:
       - name: transmission
-        image: linuxserver/transmission:latest
+        image: haugene/transmission-openvpn:latest
         ports:
           - containerPort: 9091
-            protocol: TCP
-          - containerPort: 51413
-            protocol: TCP
-          - containerPort: 51413
-            protocol: UDP
         env:
         - name: PUID
           value: "1000"
@@ -32,6 +27,20 @@ spec:
           value: "1000"
         - name: TZ
           value: Europe/Madrid
+        - name: OPENVPN_PROVIDER
+          value: "EXPRESSVPN" # VPN provider. List of supported providers: https://haugene.github.io/docker-transmission-openvpn/supported-providers/
+        - name: OPENVPN_USERNAME
+          valueFrom: # Reference to the secret | openvpn.username
+            secretKeyRef:
+              name: "expressvpn"
+              key: "username"
+        - name: OPENVPN_PASSWORD
+          valueFrom: # Reference to the secret | openvpn.password
+            secretKeyRef:
+              name: "expressvpn"
+              key: "password"
+        - name: LOCAL_NETWORK
+          value: "192.168.50.0/24"
         resources:
           requests:
             memory: "250Mi"
@@ -48,29 +57,20 @@ spec:
         - name: transmission-nfs
           mountPath: /watch
           subPath: transmission/watch
-
-      - name: wireguard-sidecar
-        image: linuxserver/wireguard:latest
         securityContext:
           privileged: true
           capabilities:
             add:
               - NET_ADMIN
-        resources:
-          requests:
-            memory: "250Mi"
-            cpu: "250m"
-          limits:
-            memory: "500Gi"
-            cpu: "500m"
-        volumeMounts:
-        - name: wg-config
-          mountPath: /config/wg_confs
+
+      # - name: busybox
+      #   image: busybox
+      #   command:
+      #     - sleep
+      #     - "3600"
+      #   resources:
 
       volumes:
-      - name: wg-config
-        secret:
-          secretName: wireguard-conf
       - name: transmission-config
         persistentVolumeClaim:
           claimName: transmission-config
