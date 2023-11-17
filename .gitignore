@@ -1,3 +1,4 @@
 *inventory.ini
 group_vars/*
 k3sdeploys/longhorn
+*secret*
